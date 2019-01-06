@@ -6,7 +6,7 @@ public class Reservations {
 	private String id;
 	private Date startDate;
 	private Date endDate;
-	private Room room;
+	private String room_id;
 	
 
 	public Reservations(){
@@ -45,13 +45,13 @@ public class Reservations {
 	}
 
 
-	public Room getRoom() {
-		return room;
+	public String getRoom() {
+		return room_id;
 	}
 
 
-	public void setRoom(Room room) {
-		this.room = room;
+	public void setRoom(String room) {
+		this.room_id = room_id;
 	}
 
 }

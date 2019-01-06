@@ -1,26 +1,27 @@
 package model;
 
-
-
 public class Customer {
 	private String id;
 	private String name;
 	private String address;
-	private String workPhone;
 	private String phone;
-	private Reservations reservations;
-	public Customer (){
-		
+	private Boolean smoker;
+	public Boolean getSmoker() {
+		return smoker;
+	}
+	public void setSmoker(Boolean smoker) {
+		this.smoker = smoker;
+	}
+	public Customer(String name, String address, String phone, Boolean smoker) {
+		super();
+		this.name = name;
+		this.address = address;
+		this.phone = phone;
+		this.smoker = smoker;
 	}
 	//private Reservations reservations;
 	public String getId() {
 		return id;
-	}
-	public Reservations getReservations() {
-		return reservations;
-	}
-	public void setReservations(Reservations reservations) {
-		this.reservations = reservations;
 	}
 	public void setId(String id) {
 		this.id = id;
@@ -36,12 +37,6 @@ public class Customer {
 	}
 	public void setAddress(String address) {
 		this.address = address;
-	}
-	public String getWorkPhone() {
-		return workPhone;
-	}
-	public void setWorkPhone(String workPhone) {
-		this.workPhone = workPhone;
 	}
 	public String getPhone() {
 		return phone;
