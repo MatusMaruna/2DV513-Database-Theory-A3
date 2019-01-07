@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import model.Customer;
+import utils.Database;
 
 public class AppController {
 	/* Menu Options */
@@ -15,7 +16,12 @@ public class AppController {
 	static String[] guestQuestions = { "Enter full name:", "Enter Address:", "Enter Phone:", "Smoker (Y/N):" };
 	static String[] reservationQuestions = { "Enter customer id:", "Enter start date YYYY/MM/DD:",
 			"Enter end date YYYY/MM/DD:", "Enter Room:" };
+	Database db; 
 
+	
+	public AppController(Database db){
+		this.db = db; 
+	}
 	public void mainMenu() {
 		space(2);
 		switch (createMenu("Main Menu", mainOptions, false)) {
@@ -68,11 +74,19 @@ public class AppController {
 	public void guestMenu() {
 		String[] data = createConstructor(2, guestQuestions);
 		System.out.println(Arrays.toString(data));
+		//db.
 	}
 
 	public void roomMenu() {
-		// Return a list of all the rooms
-		// Press any key to return
+		db.listRooms();
+		switch (createMenu("", new String[0],true)) {
+		case 0: 
+			mainMenu(); 
+			break; 
+		default:
+			System.err.println("Invalid Choice!");
+			roomMenu();
+		};
 
 	}
 
@@ -174,15 +188,19 @@ public class AppController {
 		switch (q + 1) {
 		case 1: 
 			//id
+			//check if id exists in database
 			break; 
 		case 2: 
 			//startDate
+			//check if current date is before startdate
 			break; 
 		case 3: 
 			//endDate
+			//check if end date is before startdate
 			break; 
 		case 4:
 			//room
+			//check if room is available in the time period
 			break; 
 			
 		}
@@ -195,4 +213,5 @@ public class AppController {
 			System.out.print("\n");
 		}
 	}
+	
 }
