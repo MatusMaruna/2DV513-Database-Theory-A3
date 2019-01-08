@@ -23,14 +23,12 @@ public class Database {
 
 	public void insertCustomer(String name, String phone, String address,boolean smoker,String reservation_id) {
 		try {
-			String query = "INSERT INTO Customer (id,name,phone, address,smoker,reservation_id) VALUES (?, ?, ?, ?, ?, ?)";
+			String query = "INSERT INTO Customer (name,phone, address,smoker) VALUES ( ?, ?, ?, ?)";
 			PreparedStatement presta = connect().prepareStatement(query);
-			presta.setString(1, "");
-			presta.setString(2, name);
-			presta.setString(3, phone);
-			presta.setString(4, address);
-			presta.setBoolean(5, smoker);
-			presta.setString(6, reservation_id);
+			presta.setString(1, name);
+			presta.setString(2, phone);
+			presta.setString(3, address);
+			presta.setBoolean(4, smoker);
 			presta.execute();
 
 		} catch (Exception e) {
@@ -59,7 +57,7 @@ public class Database {
 			Statement stmt = connect().createStatement();
 			ResultSet rs = stmt.executeQuery("Select * FROM Customer");
 			while(rs.next()) {
-				System.out.println("id: " + rs.getString("id") + " name: " + rs.getString("name") + 
+				System.out.println("id: " + rs.getInt("id") + " name: " + rs.getString("name") + 
 						" phone: " + rs.getString("phone") + " address: " + rs.getString("address") + 
 						" smoker: " + rs.getBoolean("smoker") + " reservation_id: " + rs.getString("reservation_id"));
 			}
@@ -98,6 +96,58 @@ public class Database {
 			e.printStackTrace();
 		} 
 	}
+	
+	public void listCustomersByName(String name) {
+		try {
+			Statement stmt = connect().createStatement();
+			ResultSet rs = stmt.executeQuery("Select * FROM Customer WHERE `name` = " + "\"" +name +"\"");
+			while(rs.next()) {
+				System.out.println("id: " + rs.getString("id") + " name: " + rs.getString("name") + 
+						" phone: " + rs.getString("phone") + " address: " + rs.getString("address") + 
+						" smoker: " + rs.getBoolean("smoker") + " reservation_id: " + rs.getString("reservation_id"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
+	public void updateCustomerReservation(String id, String reservation_id) {
+		try {
+			Statement stmt = connect().createStatement();
+			stmt.executeUpdate("Update Customer SET `reservation_id` = " + "\"" +reservation_id+"\"" + " WHERE `id` = "+ "\"" + id + "\"" );
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
+	public void deleteReservation(String id) {
+		try {
+			Statement stmt = connect().createStatement();
+			stmt.executeUpdate("Delete FROM Reservation WHERE `id` = " + "\"" +id +"\"");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	public void updateReservation(String id, Date startDate, Date endDate, String room_id) {
+		try {
+			Statement stmt = connect().createStatement();
+			stmt.executeUpdate("Update Reservation SET `startdate` = " + "\"" +startDate+"\"" + " WHERE `id` = "+ "\"" + id + "\"" );
+			stmt.executeUpdate("Update Reservation SET `enddate` = " + "\"" +endDate+"\"" + " WHERE `id` = "+ "\"" + id + "\"" );
+			stmt.executeUpdate("Update Reservation SET `room_id` = " + "\"" +room_id+"\"" + " WHERE `id` = "+ "\"" + id + "\"" );
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
+	public void listAvailableRooms(Date startDate, Date endDate, boolean smoking) {
+		//TODO
+	}
+	
+	
 	
 	public  void testSearch(){
 		

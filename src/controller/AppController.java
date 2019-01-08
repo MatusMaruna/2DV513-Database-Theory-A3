@@ -61,11 +61,18 @@ public class AppController {
 			// Edit Reservation
 			break;
 		case 3:
-			// List Reservations
+			//List Reservations
+			db.listReservations();
+			switch (createMenu("", new String[0],true)) {
+			default:
+				reservationMenu();
+				break;
+			};
 			break;
 		case 4:
-			
-	       
+			// Search Reservations
+			//By Room ?
+			//By Customer ?
 			break;
 		case 5:
 			// Delete Reservation
@@ -75,12 +82,30 @@ public class AppController {
 			reservationMenu();
 			break;
 		}
+		switch (createMenu("", new String[0],true)) {
+		case 0: 
+			mainMenu(); 
+			break; 
+		default:
+			System.err.println("Invalid Choice!");
+			reservationMenu();
+		};
 	}
 
 	public void guestMenu() {
 		String[] data = createConstructor(2, guestQuestions);
 		System.out.println(Arrays.toString(data));
-		//db.
+		if(data[3].toLowerCase().equals("y")){
+			db.insertCustomer(data[0], data[1], data[2], true, "NULL");
+		} else {
+			db.insertCustomer(data[0], data[1], data[2], false, "NULL");
+		}
+		switch (createMenu("", new String[0],true)) {
+		default:
+			mainMenu();
+			break;
+		};
+		
 	}
 
 	public void roomMenu() {
