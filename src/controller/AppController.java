@@ -8,7 +8,7 @@ import utils.Database;
 
 public class AppController {
 	/* Menu Options */
-	static String[] mainOptions = { "Reservation Management", "Create Guest", "Rooms" };
+	static String[] mainOptions = { "Reservation Management", "Create Guest", "Rooms","Search" };
 	static String[] reservationOptions = { "Create Reservation", "Edit Reservation", "List Reservations",
 			"Search Reservations", "Delete Reservation" };
 	static String[] roomOptions = { "List Rooms", "Search Rooms" };
@@ -16,6 +16,8 @@ public class AppController {
 	static String[] guestQuestions = { "Enter full name:", "Enter Address:", "Enter Phone:", "Smoker (Y/N):" };
 	static String[] reservationQuestions = { "Enter customer id:", "Enter start date YYYY/MM/DD:",
 			"Enter end date YYYY/MM/DD:", "Enter Room:" };
+	static String[] searchQuestions = { "Search manually", "Search with keywords"};
+	
 	Database db; 
 
 	
@@ -33,6 +35,9 @@ public class AppController {
 			break;
 		case 3:
 			roomMenu();
+			break;
+		case 4:
+			search();
 			break;
 
 		default:
@@ -59,7 +64,8 @@ public class AppController {
 			// List Reservations
 			break;
 		case 4:
-			// Search Reservation
+			
+	       
 			break;
 		case 5:
 			// Delete Reservation
@@ -214,4 +220,26 @@ public class AppController {
 		}
 	}
 	
+	public void search(){
+		System.out.println("1: Search manually");
+		System.out.println("2: Search with keywords");
+		
+		Scanner scan = new Scanner(System.in);
+		int input = scan.nextInt();
+		switch (input) {
+		case 1:
+			
+			db.testSearch();
+			
+			break;
+		case 2:
+			System.out.println("some options inc");
+			
+			break;
+		
+		default:
+			System.out.println("wip");
+			break;
+		}
+	}
 }
