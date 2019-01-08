@@ -1,6 +1,7 @@
 package utils;
 
 import java.sql.*;
+import java.util.Scanner;
 
 public class Database {
 
@@ -96,6 +97,43 @@ public class Database {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+	}
+	
+	public  void testSearch(){
+		
+		//ONLY WORKS ON SELECT * ATM
+		//DONT PAY TO MUCH ATTENTION TO HOW MESSY THIS FUNCTION WIP
+		try {
+			int numberOfCollumns=0;
+			System.out.println("Write your query here with the correct Syntax");
+			Scanner scan = new Scanner(System.in);
+			String s = scan.nextLine();
+			if(s.contains("Customer"))
+			numberOfCollumns=6;
+			if(s.contains("Room"))
+			numberOfCollumns=5;
+			if(s.contains("Reservation"))
+			numberOfCollumns=4;
+			Statement stmt = connect().createStatement();
+			ResultSet rs = stmt.executeQuery(s);
+			
+			while(rs.next()) {
+				
+				
+				for(int i=1;i<=numberOfCollumns;i++){
+					System.out.print("|"+rs.getString(i)+"|  ");
+				}
+				 System.out.println("\n");
+			
+			
+				
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		
 	}
 	
 }
