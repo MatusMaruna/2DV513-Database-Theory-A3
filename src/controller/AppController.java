@@ -62,6 +62,7 @@ public class AppController {
 			break;
 		case 3:
 			//List Reservations
+			System.out.println("Fetching Reservations from database...");
 			db.listReservations();
 			switch (createMenu("", new String[0],true)) {
 			default:
@@ -75,7 +76,9 @@ public class AppController {
 			//By Customer ?
 			break;
 		case 5:
-			// Delete Reservation
+			// Delete Reservations
+			System.out.println("Enter Reservation ID"); 
+			
 			break;
 		default:
 			System.err.println("Invalid Choice!");
@@ -95,11 +98,13 @@ public class AppController {
 	public void guestMenu() {
 		String[] data = createConstructor(2, guestQuestions);
 		System.out.println(Arrays.toString(data));
+		System.out.println("Inserting guest into database, please wait...");
 		if(data[3].toLowerCase().equals("y")){
 			db.insertCustomer(data[0], data[1], data[2], true, "NULL");
 		} else {
 			db.insertCustomer(data[0], data[1], data[2], false, "NULL");
 		}
+		System.out.println("Insert Complete");
 		switch (createMenu("", new String[0],true)) {
 		default:
 			mainMenu();
@@ -109,6 +114,7 @@ public class AppController {
 	}
 
 	public void roomMenu() {
+		System.out.println("Fetching rooms from database...");
 		db.listRooms();
 		switch (createMenu("", new String[0],true)) {
 		case 0: 
