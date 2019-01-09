@@ -17,6 +17,9 @@ public class AppController {
 	static String[] reservationQuestions = { "Enter customer id:", "Enter start date YYYY/MM/DD:",
 			"Enter end date YYYY/MM/DD:", "Enter Room:" };
 	static String[] searchQuestions = { "Search manually", "Search with keywords"};
+	static String[] RoomCollumns = { "id", "smoke","size","price","availability"};
+	static String[] ReservationCollumns = { "id", "startdate","enddate","room_id"};
+	static String[] CustomerCollumns = { "id", "name","phone","address","smoker","reservation_id"};
 	
 	Database db; 
 
