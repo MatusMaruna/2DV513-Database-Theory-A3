@@ -149,96 +149,75 @@ public class Database {
 	
 	
 	
-	public void search(){
-		String s="";
-		String data="";
-		String where="";
-		int i=0;
-		String[] collumns = null;
-		System.out.println("1: Search manually");
-		System.out.println("2: Search with keywords");
+	public  void keySearch(String s,String db,String where){
 		
-		Scanner scan = new Scanner(System.in);
-		int input = scan.nextInt();
-		scan.nextLine();
+		//ONLY WORKS ON SELECT * ATM
+		//DONT PAY TO MUCH ATTENTION TO HOW MESSY THIS FUNCTION WIP
+		try {
 		
-		switch (input) {
-		case 1:
 			
-			System.out.print("Write your query (use proper syntax)\n");
-			s=scan.nextLine();
-			db.manualSearch(s);
-			break;
-			
-		case 2:
-			System.out.println("Which database do you want to search?");
-			System.out.println("1: Room");
-			System.out.println("2: Customer");
-			System.out.println("3: Reservation");
-			System.out.println("4: Multiple");
-			
-			input=scan.nextInt();
-			if(input==1){
-				data="Room";
-				collumns=RoomCollumns;
-			}
-			if(input==2){
-				data="Customer";
-				collumns=CustomerCollumns;
-				}
-			if(input==3){
-				data="Reservation";
-				collumns=ReservationCollumns;
-			}
-			
-			System.out.println("What do you want to Select?");
-			System.out.println("1: *");
-			while(i<collumns.length){
-				System.out.println((i+2) +": "+collumns[i]);
-				i++;
-			}
-			
-			input=scan.nextInt();
-			if(input==1){
-				s="*";
-			}
-			else if(input>0&&input<=collumns.length+2){
-				s=collumns[input-2];
-					
-			}
-			else{
-				System.out.println("Incorrect input");
-				mainMenu();
-			}
-			
-			System.out.println("Do you want to include WHERE?");
-			System.out.println("1: Yes");
-			System.out.println("2: No");
-			
-			input=scan.nextInt();
-			if(input==1){
-				where="WHERE ";
-				System.out.print("WHERE ");
-				String y=scan.next();
-				where+=y;
-				db.keySearch(s, data, where);
-			}
-			else
-			db.keySearch(s, data, where);
-			
-			break;
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT ");
+			sb.append(s+" FROM ");
+			sb.append(db+" ");
+			sb.append(where);
 		
-		
+			System.out.println(sb.toString());
+			Statement stmt = connect().createStatement();
+			ResultSet rs = stmt.executeQuery(sb.toString());
+			
+			while(rs.next()) {
 				
+				if(s.contains("*")){
+					for(int i=1;i<=rs.getMetaData().getColumnCount();i++){
+						
+						System.out.print("|"+rs.getMetaData().getColumnLabel(i)+": "+rs.getString(i)+"|  ");
+						
+					}
+				}
+				else
+		        System.out.print("|"+s+": "+rs.getString(s)+"|  ");
+				
+				System.out.println("\n");
+				
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		
+	}
+	
+public  void manualSearch(String s){
+		
+
+		try {
+			
+			
+			
+			System.out.println(s);
+			Statement stmt = connect().createStatement();
+			ResultSet rs = stmt.executeQuery(s);
+			
 			
 		
-		default:
-			System.out.println("\n\n\nIncorrect input");
-			mainMenu();
-			break;
+			while(rs.next()) {
+				
+				for(int i=1;i<=rs.getMetaData().getColumnCount();i++){
+					
+					System.out.print("|"+rs.getMetaData().getColumnLabel(i)+": "+rs.getString(i)+"|  ");
+					
+				}
+				
+				System.out.println("\n");
+			}
 		
-		}
-		scan.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
 		
 	}
 	
