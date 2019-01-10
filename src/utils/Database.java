@@ -146,6 +146,67 @@ public class Database {
 	public void listAvailableRooms(Date startDate, Date endDate, boolean smoking) {
 		//TODO
 	}
+		public void nameRoom(){
+		//want it to be like this or do you want any kindof input?
+		try {
+			Statement stmt = connect().createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT Reservation.room_id as RoomNumber,Customer.name as CurrentGuest FROM Customer,Reservation WHERE Customer.reservation_id=Reservation.id");
+			while(rs.next()) {
+				for(int i=1;i<=rs.getMetaData().getColumnCount();i++){
+					
+					System.out.print("|"+rs.getMetaData().getColumnLabel(i)+": "+rs.getString(i)+"|  ");
+					
+				}
+				System.out.println("\n");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		
+	}
+	
+	//not sure if this is something we could use, lists all reserved rooms and the number to the current guest that currently has the reservation
+	//could have a room as input or guest if we want
+	public void phoneToRoomOwner(){
+		try {
+			Statement stmt = connect().createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT Customer.phone AS number, Reservation.room_id FROM Customer,Reservation WHERE Customer.reservation_id=Reservation.id ");
+			while(rs.next()) {
+				for(int i=1;i<=rs.getMetaData().getColumnCount();i++){
+					
+					System.out.print("|"+rs.getMetaData().getColumnLabel(i)+": "+rs.getString(i)+"|  ");
+					
+				}
+				System.out.println("\n");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+	}
+	
+	//anything we can do with the price?
+	public void cheapestAvailableRoom(){
+		try {
+			Statement stmt = connect().createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT Room.id, Room.price FROM Room WHERE Room.availability=0 ORDER BY price ASC");
+			while(rs.next()) {
+				for(int i=1;i<=rs.getMetaData().getColumnCount();i++){
+					
+					System.out.print("|"+rs.getMetaData().getColumnLabel(i)+": "+rs.getString(i)+"|  ");
+					
+				}
+				System.out.println("\n");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+	}
 	
 	
 	
