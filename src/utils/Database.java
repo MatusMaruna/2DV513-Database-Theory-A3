@@ -9,7 +9,7 @@ public class Database {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://mm223fj.mynetgear.com:20124/Hotel", "jb223pt",
-					"Avyq3Gm");
+					"test123");
 			System.out.println("Connected to Database");
 			return con;
 		} catch (Exception e) {
