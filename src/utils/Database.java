@@ -150,7 +150,7 @@ public class Database {
 		//want it to be like this or do you want any kindof input?
 		try {
 			Statement stmt = connect().createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT Reservation.room_id as RoomNumber,Customer.name as CurrentGuest FROM Customer,Reservation WHERE Customer.reservation_id=Reservation.id");
+			ResultSet rs = stmt.executeQuery("SELECT Customer.name,Reservation.room_id FROM Customer INNER JOIN Reservation ON Customer.reservation_id=Reservation.id");
 			while(rs.next()) {
 				for(int i=1;i<=rs.getMetaData().getColumnCount();i++){
 					
