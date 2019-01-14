@@ -1,22 +1,25 @@
 package controller;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import model.Customer;
 import utils.Database;
 
 public class AppController {
 	/* Menu Options */
 	static String[] mainOptions = { "Reservation Management", "Create Guest", "Rooms","Search" };
-	static String[] reservationOptions = { "Create Reservation", "Edit Reservation", "List Reservations",
-			"Search Reservations", "Delete Reservation" };
+	static String[] reservationOptions = { "Create Reservation", "List Reservations", "List Customers", "Delete Reservation" };
 	static String[] roomOptions = { "List Rooms", "Search Rooms" };
+	static String[] searchOptions = {"Customer's Reservations", "Rooms and phone numbers", "Cheapest Rooms", "Reservation Money"};
 	/* Constructor Questions */
 	static String[] guestQuestions = { "Enter full name:", "Enter Address:", "Enter Phone:", "Smoker (Y/N):" };
-	static String[] reservationQuestions = { "Enter customer id:", "Enter start date YYYY/MM/DD:",
-			"Enter end date YYYY/MM/DD:", "Enter Room:" };
-	static String[] searchQuestions = { "Search manually", "Search with keywords"};
+	static String[] reservationQuestions = { "Enter customer id:", "Enter start date YYYY-MM-DD:",
+			"Enter end date YYYY-MM-DD:", "Enter Room:" };
 	static String[] RoomCollumns = { "id", "smoke","size","price","availability"};
 	static String[] ReservationCollumns = { "id", "startdate","enddate","room_id"};
 	static String[] CustomerCollumns = { "id", "name","phone","address","smoker","reservation_id"};
@@ -40,7 +43,7 @@ public class AppController {
 			roomMenu();
 			break;
 		case 4:
-			search();
+			searchMenu();
 			break;
 
 		default:
@@ -59,11 +62,21 @@ public class AppController {
 		case 1:
 			String[] data = createConstructor(1, reservationQuestions);
 			System.out.println(Arrays.toString(data));
+			java.util.Date dateA = null;
+			java.util.Date dateB = null;
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			try {
+				dateB = df.parse(data[1]);
+				dateA = df.parse(data[2]);
+			} catch (ParseException e) {
+				
+			}
+			java.sql.Date sqlDateBefore = new java.sql.Date(dateB.getTime());
+			java.sql.Date sqlDateAfter  = new java.sql.Date(dateA.getTime());
+			db.insertReservation(sqlDateBefore, sqlDateAfter, data[3]);
+			db.updateCustomerReservation(data[0], db.getReservationId(sqlDateBefore, sqlDateAfter, data[3]));
 			break;
 		case 2:
-			// Edit Reservation
-			break;
-		case 3:
 			//List Reservations
 			System.out.println("Fetching Reservations from database...");
 			db.listReservations();
@@ -73,14 +86,24 @@ public class AppController {
 				break;
 			};
 			break;
-		case 4:
-			// Search Reservations
-			//By Room ?
-			//By Customer ?
+			
+		case 3:
+			//List Reservations
+			System.out.println("Fetching Reservations from database...");
+			db.listCustomers();
+			switch (createMenu("", new String[0],true)) {
+			default:
+				reservationMenu();
+				break;
+			};
 			break;
-		case 5:
+		case 4:
 			// Delete Reservations
-			System.out.println("Enter Reservation ID"); 
+			System.out.println("Fetching Reservations from database...");
+			db.listReservations();
+			String[] reservationDelID = createConstructor(-1, new String[]{"Choose reservation ID:"});
+			db.deleteReservation(reservationDelID[0]);
+			System.out.println("Reservation " + reservationDelID[0] + " deleted");
 			
 			break;
 		default:
@@ -103,9 +126,9 @@ public class AppController {
 		System.out.println(Arrays.toString(data));
 		System.out.println("Inserting guest into database, please wait...");
 		if(data[3].toLowerCase().equals("y")){
-			db.insertCustomer(data[0], data[1], data[2], true, "NULL");
+			db.insertCustomer(data[0], data[2], data[1], true, "NULL");
 		} else {
-			db.insertCustomer(data[0], data[1], data[2], false, "NULL");
+			db.insertCustomer(data[0], data[2], data[1], false, "NULL");
 		}
 		System.out.println("Insert Complete");
 		switch (createMenu("", new String[0],true)) {
@@ -127,7 +150,34 @@ public class AppController {
 			System.err.println("Invalid Choice!");
 			roomMenu();
 		};
+		
 
+	}
+	
+	public void searchMenu() {
+		switch (createMenu("Search Menu", searchOptions, true)) {
+		case 0: 
+			mainMenu();
+			break;
+		case 1: 
+			db.nameRoom();
+			break; 
+		case 2: 
+			db.phoneToRoomOwner();
+			break; 
+		case 3:
+			db.cheapestAvailableRoom();
+			break;
+		case 4:
+			db.smokingRooms();
+		default: 
+			break;
+		}
+		switch (createMenu("", new String[0],true)) {
+		default:
+			searchMenu();
+			break;
+		};
 	}
 
 	/* Creates menu in console */
@@ -161,7 +211,7 @@ public class AppController {
 			switch (id) {
 			case 1:
 				// Reservation
-				if (validateReservation(i, input)) {
+				if (validateReservation(i, input, data)) {
 					data[i] = input;
 				} else {
 					System.err.println("Invalid input,Try again!");
@@ -173,11 +223,15 @@ public class AppController {
 				if (validateGuest(i, input)) {
 					data[i] = input;
 				} else {
-					// System.err.println("Invalid input, Try again!");
+					System.err.println("Invalid input, Try again!");
 					i--;
 				}
 				break;
+			default:
+				data[i] = input;
+				break;
 			}
+			
 
 		}
 
@@ -223,24 +277,59 @@ public class AppController {
 
 	}
 
-	public boolean validateReservation(int q, String data) {
+	public boolean validateReservation(int q, String data, String[] datas) {
 		boolean valid = true; 
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		java.util.Date date;
 		switch (q + 1) {
 		case 1: 
-			//id
-			//check if id exists in database
+			if(!db.getCustomerById(data)){
+			valid = false; 
+			System.err.println("Invalid id, or customer has a reservation");
+			}
 			break; 
 		case 2: 
-			//startDate
-			//check if current date is before startdate
+			df.setLenient(false); 
+			try{
+				date = df.parse(data);
+			} catch (Exception e) {
+				valid = false; 
+				System.err.println("Invalid date, yyyy-mm-dd");
+			}
+		
 			break; 
 		case 3: 
-			//endDate
-			//check if end date is before startdate
-			break; 
+			df.setLenient(false);
+			try{
+				date = df.parse(data);
+			} catch (Exception e) {
+				valid = false; 
+				System.err.println("Invalid date, yyyy-mm-dd");
+				break;
+			}
+			java.util.Date dateB = null;
+			try {
+				dateB = df.parse(datas[1]);
+			} catch (ParseException e) {
+				
+			}
+			if(date.before(dateB)) {
+				valid = false; 
+				System.err.println("Invalid date, has to be after startDate");
+				break;
+			}
+			java.sql.Date sqlDateBefore = new java.sql.Date(dateB.getTime());
+			java.sql.Date sqlDateAfter  = new java.sql.Date(date.getTime());
+			System.out.println("Available Rooms: ");
+			db.listAvailableRooms(sqlDateBefore, sqlDateAfter, db.isCustomerSmoker(datas[0]));
+		
+			break;  
 		case 4:
-			//room
-			//check if room is available in the time period
+			ArrayList availableRooms = db.returnListOfAvailableRooms(datas[1], datas[2], db.isCustomerSmoker(datas[0]));
+			if(!availableRooms.contains(data)) {
+				valid = false; 
+				System.err.println("That room is not available !");
+			}
 			break; 
 			
 		}
@@ -254,96 +343,4 @@ public class AppController {
 		}
 	}
 	
-	public void search(){
-		String s="";
-		String data="";
-		String where="";
-		int i=0;
-		String[] collumns = null;
-		System.out.println("1: Search manually");
-		System.out.println("2: Search with keywords");
-		
-		Scanner scan = new Scanner(System.in);
-		int input = scan.nextInt();
-		scan.nextLine();
-		
-		switch (input) {
-		case 1:
-			
-			System.out.print("Write your query (use proper syntax)\n");
-			s=scan.nextLine();
-			db.manualSearch(s);
-			break;
-			
-		case 2:
-			System.out.println("Which database do you want to search?");
-			System.out.println("1: Room");
-			System.out.println("2: Customer");
-			System.out.println("3: Reservation");
-			System.out.println("4: Multiple");
-			
-			input=scan.nextInt();
-			if(input==1){
-				data="Room";
-				collumns=RoomCollumns;
-			}
-			if(input==2){
-				data="Customer";
-				collumns=CustomerCollumns;
-				}
-			if(input==3){
-				data="Reservation";
-				collumns=ReservationCollumns;
-			}
-			
-			System.out.println("What do you want to Select?");
-			System.out.println("1: *");
-			while(i<collumns.length){
-				System.out.println((i+2) +": "+collumns[i]);
-				i++;
-			}
-			
-			input=scan.nextInt();
-			if(input==1){
-				s="*";
-			}
-			else if(input>0&&input<=collumns.length+2){
-				s=collumns[input-2];
-					
-			}
-			else{
-				System.out.println("Incorrect input");
-				mainMenu();
-			}
-			
-			System.out.println("Do you want to include WHERE?");
-			System.out.println("1: Yes");
-			System.out.println("2: No");
-			
-			input=scan.nextInt();
-			if(input==1){
-				where="WHERE ";
-				System.out.print("WHERE ");
-				String y=scan.next();
-				where+=y;
-				db.keySearch(s, data, where);
-			}
-			else
-			db.keySearch(s, data, where);
-			
-			break;
-		
-		
-				
-			
-		
-		default:
-			System.out.println("\n\n\nIncorrect input");
-			mainMenu();
-			break;
-		
-		}
-		scan.close();
-		
-	}
 }
