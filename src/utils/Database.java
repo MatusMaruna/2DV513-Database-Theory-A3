@@ -326,10 +326,10 @@ public class Database {
 		}
 
 	}
-	public void smokingRooms() {
+	public void reservationsStarting() {
 		try {
 			Statement stmt = connect().createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM Room GROUP BY smoke");
+			ResultSet rs = stmt.executeQuery("SELECT COUNT(Reservation.id) AS ReservationsStarting ,MONTHNAME(startdate) AS MONTH FROM Reservation GROUP BY MONTH(startdate)");
 			while (rs.next()) {
 				for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
 

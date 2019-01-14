@@ -15,7 +15,7 @@ public class AppController {
 	static String[] mainOptions = { "Reservation Management", "Create Guest", "Rooms","Search" };
 	static String[] reservationOptions = { "Create Reservation", "List Reservations", "List Customers", "Delete Reservation" };
 	static String[] roomOptions = { "List Rooms", "Search Rooms" };
-	static String[] searchOptions = {"Customer's Reservations", "Rooms and phone numbers", "Cheapest Rooms", "Reservation Money"};
+	static String[] searchOptions = {"Customer's Reservations", "Rooms and phone numbers", "Cheapest Rooms", "Reservations ending by month"};
 	/* Constructor Questions */
 	static String[] guestQuestions = { "Enter full name:", "Enter Address:", "Enter Phone:", "Smoker (Y/N):" };
 	static String[] reservationQuestions = { "Enter customer id:", "Enter start date YYYY-MM-DD:",
@@ -169,7 +169,7 @@ public class AppController {
 			db.cheapestAvailableRoom();
 			break;
 		case 4:
-			db.smokingRooms();
+			db.reservationsStarting();
 		default: 
 			break;
 		}
